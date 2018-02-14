@@ -5,5 +5,5 @@ SET @PREVIOUSFOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS;
 SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE USER 'django-user'@'%' IDENTIFIED BY 'mydjango-password';
-GRANT ALL PRIVILEGES ON django_jwt.* TO 'django-user'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'django-user'@'%';
 FLUSH PRIVILEGES;
