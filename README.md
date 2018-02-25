@@ -1,4 +1,4 @@
-# Sample Python Django Backend Running in a Docker container
+# Sample Python Django Backend Running in a Docker Container
 This is a sample Python Django REST application with JSON Web Tokens (JWT) implemented for authentication of specific services. The app is packaged and deployed in a Docker container, along with the supporting applications via the docker-compose file. Once logging is implementing, all necessary monitoring and tracking information will be output to STDOUT and available via `docker logs` or any other monitoring solution that can read the STDOUT, such as Logstash.
 
 THIS REPO IS UNDER CONSTRUCTION AND STILL IN PROGRESS.
