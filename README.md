@@ -28,6 +28,7 @@ To deploy everything, simply run:
 The application is a simple music catalog, with authentication and a user management services. The current list of available services is as follows:
 
 - /api/v1/decade        GET
+
 Response object:
 ```
 [
@@ -69,6 +70,7 @@ Response object:
 ]
 ```
 - /api/v1/genre         GET
+
 Response object:
 ```
 [
@@ -93,6 +95,7 @@ Response object:
 ]
 ```
 - /api/v1/user          GET, POST
+
 Request object (POST only):
 ```
 {
@@ -101,6 +104,7 @@ Request object (POST only):
 	}
 }
 ```
+
 Response object:
 ```
 {
@@ -117,6 +121,7 @@ Response object:
 }
 ```
 - api/v1/user/register  POST
+
 Request object:
 ```
 {
@@ -126,6 +131,7 @@ Request object:
 	"last_name": "Wick"
 }
 ```
+
 Response object:
 ```
 {
@@ -142,6 +148,7 @@ Response object:
 }
 ```
 - api/v1/user/login     POST
+
 Request object:
 ```
 {
@@ -149,6 +156,7 @@ Request object:
 	"password": "password"
 }
 ```
+
 Response object:
 ```
 {
@@ -157,4 +165,5 @@ Response object:
 }
 ```
 - api/v1/user/logout    POST
+
 This service returns a `403 Forbidden` if successful
