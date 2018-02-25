@@ -1,5 +1,5 @@
 from rest_framework import status
-# from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,7 +8,7 @@ from .serializers import GenreSerializer, DecadeSerializer
 
 class GenreView(APIView):
 
-    # permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
 
     def get(self, request, format=None):
         genre = Genre.objects.all()
@@ -16,6 +16,8 @@ class GenreView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DecadeView(APIView):
+
+    permission_classes = (AllowAny,)
 
     def get(self, request, format=None):
         decade = Decade.objects.all()

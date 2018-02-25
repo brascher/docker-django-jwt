@@ -9,7 +9,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./data:/var/lib/mysql
+      - /data:/var/lib/mysql
       - ./mysql-initdb:/docker-entrypoint-initdb.d
     restart: always
 
