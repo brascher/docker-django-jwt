@@ -1,6 +1,6 @@
 import jwt
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, user_logged_in
 from rest_framework import authentication, exceptions
 from rest_framework_jwt.settings import api_settings
 
@@ -51,6 +51,8 @@ class MyAuthJwtAuthentication(authentication.BaseAuthentication):
             msg = "User is not active"
             raise exceptions.AuthenticationFailed(msg)
 
+        user_logged_in.send(sender=user.__class__, request=self.context['request'], user=user)
+        
         return user, token
 
     def parse_auth_header(self, request):

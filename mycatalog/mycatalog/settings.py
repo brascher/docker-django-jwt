@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import sys
 
 from datetime import timedelta
 
@@ -129,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# JWT Authentication settings
+# REST Framwork: includes JWT Authentication and exception settings
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
@@ -141,6 +142,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
+    "EXCEPTION_HANDLER": "mycatalog.exceptions.mycatalog_exception_handler",
 }
 
 AUTH_USER_MODEL = "myauth.User"
@@ -152,4 +154,42 @@ JWT_AUTH = {
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=30),
     "JWT_GET_USER_SECRET_KEY": "myauth.models.get_jwt_secret",
     "JWT_PAYLOAD_GET_USERNAME_HANDLER": "myauth.models.get_jwt_email_from_payload_handler",
+}
+
+# LOGGING
+LOGGING = {
+    "version": 1,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s - my_catalog - %(levelname)s - %(message)s"
+        },
+        "dev": {
+            "format": "[%(asctime)s] %(message)s"
+        }
+    },
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue"
+        }
+    },
+    "handlers": {
+        "stdout": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "stream": sys.stdout
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "dev",
+            "filters": ["require_debug_true"]
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["stdout", "console"],
+            "propogate": True
+        }
+    }
 }
