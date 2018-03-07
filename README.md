@@ -3,7 +3,7 @@ This is a sample Python Django REST application with JSON Web Tokens (JWT) imple
 
 THIS REPO IS UNDER CONSTRUCTION AND STILL IN PROGRESS.
 
-Curently, I have implemented some very basic services, some quick tests, most of the JWT functionality and services, and containerized the app. Up next is centralized exception handling and logging ...
+Currently, I have implemented some very basic services, some quick tests, most of the JWT functionality and services, and containerized the app. Up next is centralized exception handling and logging ...
 
 For the JWT implementation, I used the `django-rest-framework-jwt` library, but customized it to use my own User Model and authentication classes. I have implemented it using just the library a few times and it is very straight-forward allowing you to quickly have JWT authentication working and endpoints for signup, login, refresh, and logout. In this implementation, I decided to use `email` in place of a username, added user-specific JWT secrets that allow for invalidating a token immediately when the user logs out, and implemented the functionality to generate the tokens. I still need to implement the custom payload handling to allow for token refresh, but am moving on and will come back to this.
 
