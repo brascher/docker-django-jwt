@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN chmod +x ./docker-entrypoint.sh
 
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:8005" ]
+CMD [ "gunicorn", "mycatalog.wsgi:application", "--bind", "0.0.0.0:8005", "--workers", "3" ]
