@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+import logging.config
 import os
 import sys
 
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'myauth',
+    'myauth.apps.MyAuthConfig',
+#    'myauth',
     'catalog',
 ]
 
@@ -157,39 +159,58 @@ JWT_AUTH = {
 }
 
 # LOGGING
+LOGGING_CONFIG = None
 LOGGING = {
     "version": 1,
+    "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(asctime)s - my_catalog - %(levelname)s - %(message)s"
+            "format": "%(asctime)s - my_catalog - %(levelname)s - %(message)s",
         },
         "dev": {
-            "format": "[%(asctime)s] %(message)s"
-        }
+            "format": "[%(asctime)s] %(message)s",
+        },
     },
     "filters": {
         "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue"
-        }
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
     },
     "handlers": {
         "stdout": {
             "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-            "stream": sys.stdout
+            "filters": ["require_debug_false"],
+            "stream": sys.stdout,
         },
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "dev",
-            "filters": ["require_debug_true"]
-        }
+            "filters": ["require_debug_true"],
+        },
     },
     "loggers": {
-        "django": {
+        "django.request": {
             "handlers": ["stdout", "console"],
-            "propogate": True
-        }
+            "level": "INFO",
+            "propogate": False,
+        },
+        "django.server": {
+            "handlers": ["stdout", "console"],
+            "level": "INFO",
+            "propogate": False,
+        },
+        "myauth": {
+            "handlers": ["stdout", "console"],
+            "level": "INFO",
+            "propogate": False,
+        },
     }
 }
+
+logging.config.dictConfig(LOGGING)

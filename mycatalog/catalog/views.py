@@ -3,12 +3,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from mycatalog.loggers import MyCatalogLogger
-
 from .models import Genre, Decade
 from .renderers import DecadeRenderer, GenreRenderer
 from .serializers import GenreSerializer, DecadeSerializer
 
+# /genre service; GET only
 class GenreView(APIView):
 
     permission_classes = (AllowAny,)
@@ -19,6 +18,7 @@ class GenreView(APIView):
         serializer = GenreSerializer(genre, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# /decade service; GET only
 class DecadeView(APIView):
 
     permission_classes = (AllowAny,)

@@ -8,6 +8,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework_jwt.settings import api_settings
 
 from .models import User
+from .signals import inactive_user, invalid_credentials, missing_credentials, token_created
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -66,17 +67,21 @@ class LoginSerializer(serializers.Serializer):
         password = data.get("password", None)
             
         if email is None or password is None:
+            missing_credentials.send(sender=None, request=self.context["request"], user=data)
             raise serializers.ValidationError("User credentails are missing")
 
         user = authenticate(username=email, password=password)
 
         if user is None:
+            invalid_credentials.send(sender=None, request=self.context["request"], user=data)
             raise serializers.ValidationError("User credentails are incorrect")
 
         if not user.is_active:
+            inactive_user.send(sender=None, request=self.context["request"], user=data)
             raise serializers.ValidationError("User account has been disabled")
 
         self.update_last_login(user)
+        token_created.send(sender=None, request=self.context["request"], user=data)
         
         return {
             "email": user.email,

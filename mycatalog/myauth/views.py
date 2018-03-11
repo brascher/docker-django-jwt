@@ -1,4 +1,7 @@
 import datetime
+import logging
+
+from django.dispatch import Signal
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -29,12 +32,12 @@ class RegisterView(APIView):
 class LoginView(APIView):
 
     permission_classes = (AllowAny,)
-    serializer_class = LoginSerializer  
+    serializer_class = LoginSerializer
 
     def post(self, request):
         
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)   
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # /user/login/ view; POST only
