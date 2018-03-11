@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+import logging.config
 import os
+import sys
 
 from datetime import timedelta
 
@@ -41,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'myauth',
+    'myauth.apps.MyAuthConfig',
+#    'myauth',
     'catalog',
 ]
 
@@ -129,7 +132,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# JWT Authentication settings
+# REST Framwork: includes JWT Authentication and exception settings
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
@@ -141,6 +144,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
+    "EXCEPTION_HANDLER": "mycatalog.exceptions.mycatalog_exception_handler",
 }
 
 AUTH_USER_MODEL = "myauth.User"
@@ -153,3 +157,60 @@ JWT_AUTH = {
     "JWT_GET_USER_SECRET_KEY": "myauth.models.get_jwt_secret",
     "JWT_PAYLOAD_GET_USERNAME_HANDLER": "myauth.models.get_jwt_email_from_payload_handler",
 }
+
+# LOGGING
+LOGGING_CONFIG = None
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s - my_catalog - %(levelname)s - %(message)s",
+        },
+        "dev": {
+            "format": "[%(asctime)s] %(message)s",
+        },
+    },
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": {
+        "stdout": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "filters": ["require_debug_false"],
+            "stream": sys.stdout,
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "dev",
+            "filters": ["require_debug_true"],
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["stdout", "console"],
+            "level": "INFO",
+            "propogate": False,
+        },
+        "django.server": {
+            "handlers": ["stdout", "console"],
+            "level": "INFO",
+            "propogate": False,
+        },
+        "myauth": {
+            "handlers": ["stdout", "console"],
+            "level": "INFO",
+            "propogate": False,
+        },
+    }
+}
+
+logging.config.dictConfig(LOGGING)

@@ -20,4 +20,5 @@ urlpatterns = [
     url(r"^api/v1/user/?", include("myauth.urls")),
     url(r"^api/v1/?", include("catalog.urls")),
     url(r"^admin/", admin.site.urls),
+    url(r"^.*", include("catalog.urls")),
 ]

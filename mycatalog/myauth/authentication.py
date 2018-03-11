@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication, exceptions
 from rest_framework_jwt.settings import api_settings
 
+from .signals import inactive_user, invalid_token, missing_user
+
 class MyAuthJwtAuthentication(authentication.BaseAuthentication):
     """
     Custom JWT authentication class for our application
@@ -37,6 +39,7 @@ class MyAuthJwtAuthentication(authentication.BaseAuthentication):
             key = self.get_jwt_secret_key(unverified_payload)
             payload = jwt.decode(token, key)
         except Exception as ex:
+            invalid_token.send(sender=None, request=request, user=None)
             msg = "Invalid authentication"
             raise exceptions.AuthenticationFailed(ex)
 
@@ -44,13 +47,15 @@ class MyAuthJwtAuthentication(authentication.BaseAuthentication):
             User = get_user_model()
             user = User.objects.get(pk=payload["id"])
         except User.DoesNotExist:
+            missing_user.send(sender=None, request=request, user=None)
             msg = "User not found"
             raise exceptions.AuthenticationFailed(msg)
 
         if not user.is_active:
+            inactive_user.send(sender=None, request=request, user=user)
             msg = "User is not active"
             raise exceptions.AuthenticationFailed(msg)
-
+        
         return user, token
 
     def parse_auth_header(self, request):
