@@ -1,7 +1,5 @@
 from django.test import TestCase, Client
-from django.urls import resolve, reverse
-
-from rest_framework import status
+from django.urls import reverse
 
 from ..models import Genre
 from ..serializers import GenreSerializer
@@ -16,8 +14,7 @@ class GenreTest(TestCase):
         Genre.objects.create(name="Country")
         Genre.objects.create(name="Alt Rock", description="Something different")
 
-        url = reverse("genres")
-        self.response = self.client.get(url)
+        self.response = self.client.get("/api/v1/genre/")
 
     def test_genre_all_success_status_code(self):
         self.assertEqual(self.response.status_code, 200)
