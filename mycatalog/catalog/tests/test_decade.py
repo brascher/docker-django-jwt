@@ -1,7 +1,5 @@
 from django.test import TestCase, Client
-from django.urls import resolve, reverse
-
-from rest_framework import status
+from django.urls import reverse
 
 from ..models import Decade
 from ..serializers import DecadeSerializer
@@ -16,13 +14,12 @@ class DecadeTest(TestCase):
         Decade.objects.create(name="80's")
         Decade.objects.create(name="00's")
 
-        url = reverse("decades")
-        self.response = self.client.get(url)
+        self.response_all = self.client.get("/api/v1/decade/")
 
     def test_decade_all_success_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
+        self.assertEqual(self.response_all.status_code, 200)
 
     def test_decade_contains_all(self):
         decades = Decade.objects.all()
         serializer = DecadeSerializer(decades, many=True)
-        self.assertEqual(self.response.data, serializer.data)
+        self.assertEqual(self.response_all.data, serializer.data)
