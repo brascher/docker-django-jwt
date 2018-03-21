@@ -1,5 +1,8 @@
+import json
+
 from django.test import RequestFactory, TestCase, Client
 from django.urls import resolve
+from unittest.mock import patch, MagicMock
 
 from ..models import Genre
 from ..serializers import GenreSerializer
@@ -86,3 +89,42 @@ class GenreTest(TestCase):
         self.assertEqual(serializer.data["id"], genre_pk)
         self.assertEqual(serializer.data["name"], genre_name)
         self.assertEqual(serializer.data["description"], genre_description)
+
+    @patch("catalog.models.Genre.save", MagicMock(name="save"))
+    def test_genre_post_success(self):
+        """
+        Genre POST works correctly
+        """
+        new_genre = {
+            "genre": {
+                "name": "Prog Rock",
+                "description": "Rush rules here"
+            }
+        }
+        request = self.request_factory.post("/api/v1/genre/",
+                                            json.dumps(new_genre),
+                                            content_type="application/json")
+    
+        response = GenreListView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Genre.save.called)
+        self.assertEqual(Genre.save.call_count, 1)
+
+    @patch("catalog.models.Genre.save", MagicMock(name="save"))
+    def test_genre_put_success(self):
+        """
+        Genre PUT works correctly
+        """
+        updated_genre = {
+            "genre": {
+                "description": "Description change up"
+            }
+        }
+        request = self.request_factory.put("/api/v1/genre/1/",
+                                            json.dumps(updated_genre),
+                                            content_type="application/json")
+    
+        response = GenreDetailView.as_view()(request, pk=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Genre.save.called)
+        self.assertEqual(Genre.save.call_count, 1)
